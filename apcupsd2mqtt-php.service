@@ -1,0 +1,15 @@
+[Unit]
+Description=apcupsd2mqtt-php service
+Wants=network.target
+After=network.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/usr/bin/php /home/pi/apcupsd2mqtt-php/start.php
+KillSignal=SIGTERM
+KillMode=process
+Restart=on-failure

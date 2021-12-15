@@ -1,0 +1,24 @@
+{
+  "name": "evgenyvolferts/apcupsd2mqtt-php",
+  "description": "PHP daemon to read APC UPS status data with apcupsd and publish it via MQTT",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Evgeny Volferts",
+      "email": "eugene.wolferz@gmail.com"
+    }
+  ],
+  "require": {
+    "ext-json": "*",
+    "ext-pcntl": "*",
+    "ext-posix": "*",
+    "php": "^7.4|^8.0",
+    "php-mqtt/client": "^1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "evgenyvolferts\\Apcupsd2mqttPhp\\": "src/"
+    }
+  }
+}
