@@ -55,7 +55,7 @@ cp ./config/config.example.json ./config/config.json
 - you can leave `errorLog` empty if STDOUT messages suit you
 - `interval` specifies how many seconds should be between UPS status requests
 - leave `haTopic` empty if you don't use [Home Assistant](https://www.home-assistant.io) - service will not create sensor config topics
-- you can delete some of the `properties` if you want to skip them in your MQTT broker and [Home Assistant](https://www.home-assistant.io)
+- you can delete some of the `properties` if you want to skip them in your MQTT broker and [Home Assistant](https://www.home-assistant.io) (see full properties list in `config/config.example.json`)
 
 ## Systemd service installation
 Do not forget to configure valid installation and php binary paths in the service file. 
