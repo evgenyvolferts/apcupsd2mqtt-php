@@ -48,7 +48,7 @@ cp ./config/config.example.json ./config/config.json
     "HOSTNAME",
     "UPSNAME",
     "VERSION",
-    ...
+    "etc"
   ]
 }
 ```
