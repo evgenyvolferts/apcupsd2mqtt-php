@@ -15,18 +15,21 @@ class Apcupsd2mqttPhp
     const ERROR_NO_DEVICES_CONFIGURED = 3;
     const ERROR_CANNOT_DELETE_PID_FILE = 4;
     const ERROR_MQTT = 5;
+    const ERROR_APCUPSD_NOT_INSTALLED = 6;
+    const ERROR_APCACCESS = 7;
+    const ERROR_UNKNOWN = 99;
 
     public static array $propertyConfigTemplate = [
-        'availability'          => [
+        'availability'        => [
             [
                 'topic' => 'apcupsd2mqtt-php/bridge/state',
             ],
         ],
-        'enabled_by_default'    => true,
-        'entity_category'       => 'diagnostic',
-        'icon'                  => 'mdi:information',
-        'unit_of_measurement'   => '',
-        'value_template'        => '{{ value_json.%PROPERTY_NAME% }}',
+        'enabled_by_default'  => true,
+        'entity_category'     => 'diagnostic',
+        'icon'                => 'mdi:information',
+        'unit_of_measurement' => '',
+        'value_template'      => '{{ value_json.%PROPERTY_NAME% }}',
     ];
 
     public static array $properties = [
@@ -606,7 +609,7 @@ class Apcupsd2mqttPhp
                                 $sensorConfig['icon'] = self::$properties[$key]['icon'];
                             }
                             $sensorConfig['json_attributes_topic'] = 'apcupsd2mqtt-php/' . $deviceSerial;
-                            $sensorConfig['name'] = $device['name'] . ' ' . self::$properties[$key]['topic_name'];
+                            $sensorConfig['name'] = strtolower($device['name']) . ' ' . self::$properties[$key]['topic_name'];
                             $sensorConfig['state_topic'] = 'apcupsd2mqtt-php/' . $deviceSerial;
                             $sensorConfig['unique_id'] = 'apcupsd2mqtt_php_' . $deviceSerial . '_' . self::$properties[$key]['topic_name'];
                             if (isset(self::$properties[$key]['unit_of_measurement'])) {
@@ -629,7 +632,7 @@ class Apcupsd2mqttPhp
                             // publish sensor config to make it available in Home Assistant
                             try {
                                 $this->mqtt->publish(
-                                    $device['haTopic'] . '/' . self::$properties[$key]['topic_name'] . '/config',
+                                    strtolower($device['haTopic']) . '/' . self::$properties[$key]['topic_name'] . '/config',
                                     json_encode($sensorConfig, JSON_UNESCAPED_UNICODE),
                                     0,
                                     true
@@ -641,6 +644,24 @@ class Apcupsd2mqttPhp
                                 );
                             }
                         }
+                    }
+                } else {
+                    if (strpos($result['error'], 'apcaccess: not found') !== false) {
+                        $this->terminateWithError(
+                            'Package apcupsd is not installed',
+                            self::ERROR_APCUPSD_NOT_INSTALLED
+                        );
+                    } elseif (!empty($result['error'])) {
+                        $this->terminateWithError(
+                            'Error running apcaccess: ' . $result['error'],
+                            self::ERROR_APCACCESS
+                        );
+                    } else {
+                        $this->terminateWithError(
+                            'Unknown error running apcaccess (' .
+                            implode(':', [$device['host'], $device['port']]) . ')',
+                            self::ERROR_UNKNOWN
+                        );
                     }
                 }
             }
