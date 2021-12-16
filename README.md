@@ -2,11 +2,11 @@
 
 This service allows you:
 - to collect UPS status data from several systems running [apcupsd](http://www.apcupsd.org/) and publish them on an MQTT broker 
-- to generate UPS sensors config for [Home Assistant](https://www.home-assistant.io).
+- to generate UPS sensors configuration for [Home Assistant](https://www.home-assistant.io).
 
 ## Installation
 
-The service requires PHP version 7.4 or higher and [composer](https://getcomposer.org/download/). Just clone the repo and install the dependencies.
+The service requires PHP version 7.4 or higher, [composer](https://getcomposer.org/download/) and [apcupsd](http://www.apcupsd.org/). Just clone the repo and install the dependencies.
 
 ```bash
 cd /home/pi
@@ -52,13 +52,13 @@ cp ./config/config.example.json ./config/config.json
   ]
 }
 ```
-- you can leave `errorLog` empty if STDOUT messages suit you
-- `interval` specifies how many seconds should be between UPS status requests
-- leave `haTopic` empty if you don't use [Home Assistant](https://www.home-assistant.io) - service will not create sensor config topics
+- you can leave `errorLog` empty if STDOUT messages suits you
+- `interval` specifies the number of seconds between the start of data request cycles (can be fractional)  
+- leave `haTopic` empty if you don't use [Home Assistant](https://www.home-assistant.io) - service will not create sensor configuration topics
 - you can delete some of the `properties` if you want to skip them in your MQTT broker and [Home Assistant](https://www.home-assistant.io) (see full properties list in `config/config.example.json`)
 
 ## Systemd service installation
-Do not forget to configure valid installation and php binary paths in the service file. 
+Do not forget to specify user to run service and to configure valid installation and php binary paths in the service file.
 ```bash
 sudo cp apcupsd2mqtt-php.service /lib/systemd/system/
 sudo chmod 644 /lib/systemd/system/apcupsd2mqtt-php.service
