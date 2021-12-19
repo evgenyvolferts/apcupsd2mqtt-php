@@ -633,6 +633,10 @@ class Apcupsd2mqttPhp
                             try {
                                 $this->mqtt->publish(
                                     strtolower($device['haTopic']) . '/' . self::$properties[$key]['topic_name'] . '/config',
+                                    ''
+                                );
+                                $this->mqtt->publish(
+                                    strtolower($device['haTopic']) . '/' . self::$properties[$key]['topic_name'] . '/config',
                                     json_encode($sensorConfig, JSON_UNESCAPED_UNICODE)
                                 );
                             } catch (Exception $e) {
