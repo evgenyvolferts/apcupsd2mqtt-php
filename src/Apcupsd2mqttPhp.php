@@ -34,68 +34,65 @@ class Apcupsd2mqttPhp
 
     public static array $properties = [
         'APC'       => [
-            'description'         => 'Header record indicating the STATUS format revision level, the number of records that follow the APC statement, and the number of bytes that follow the record.',
+            'description'         => 'Header record indicating the STATUS format revision level, the number of ' .
+                'records that follow the APC statement, and the number of bytes that follow the record.',
             'topic_name'          => 'apc',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Header',
         ],
         'DATE'      => [
             'description'         => 'The date and time that the information was last obtained from the UPS.',
             'topic_name'          => 'date',
+            'friendly_name'       => 'Last information',
             'icon'                => 'mdi:calendar-clock',
-            'unit_of_measurement' => '',
         ],
         'HOSTNAME'  => [
             'description'         => 'The name of the machine that collected the UPS data.',
             'topic_name'          => 'hostname',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Hostname',
         ],
         'UPSNAME'   => [
-            'description'         => 'The name of the UPS as stored in the EEPROM or in the UPSNAME directive in the configuration file.',
+            'description'         => 'The name of the UPS as stored in the EEPROM or in the UPSNAME directive in the ' .
+                'configuration file.',
             'topic_name'          => 'ups_name',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Name',
         ],
         'VERSION'   => [
             'description'         => 'The apcupsd release number, build date, and platform.',
             'topic_name'          => 'apcupsd_version',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Apcupsd version',
         ],
         'CABLE'     => [
             'description'         => 'The cable as specified in the configuration file (UPSCABLE).',
             'topic_name'          => 'ups_cable',
+            'friendly_name'       => 'Cable type',
             'icon'                => 'mdi:cable-data',
-            'unit_of_measurement' => '',
         ],
         'MODEL'     => [
             'description'         => 'The UPS model as derived from information from the UPS.',
             'topic_name'          => 'ups_model',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Model',
         ],
         'UPSMODE'   => [
-            'description'         => 'The mode in which apcupsd is operating as specified in the configuration file (UPSMODE)',
+            'description'         => 'The mode in which apcupsd is operating as specified in the configuration ' .
+                'file (UPSMODE)',
             'topic_name'          => 'ups_mode',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Mode',
         ],
         'STARTTIME' => [
             'description'         => 'The time/date that apcupsd was started.',
             'topic_name'          => 'apcupsd_started',
+            'friendly_name'       => 'Apcupsd started',
             'icon'                => 'mdi:calendar-clock',
-            'unit_of_measurement' => '',
         ],
         'STATUS'    => [
             'description'         => 'The current status of the UPS (ONLINE, ONBATT, etc.)',
             'topic_name'          => 'ups_status',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Status',
         ],
         'LINEV'     => [
             'description'         => 'The current line voltage as returned by the UPS.',
             'topic_name'          => 'line_voltage',
+            'friendly_name'       => 'Input Voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -103,6 +100,7 @@ class Apcupsd2mqttPhp
         'LOADPCT'   => [
             'description'         => 'The percentage of load capacity as estimated by the UPS.',
             'topic_name'          => 'load_percentage',
+            'friendly_name'       => 'Load',
             'icon'                => 'mdi:gauge',
             'unit_of_measurement' => '%',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -110,6 +108,7 @@ class Apcupsd2mqttPhp
         'BCHARGE'   => [
             'description'         => 'The percentage charge on the batteries.',
             'topic_name'          => 'batteries_charge',
+            'friendly_name'       => 'Batteries charge',
             'icon'                => 'mdi:gauge',
             'unit_of_measurement' => '%',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -117,27 +116,34 @@ class Apcupsd2mqttPhp
         'TIMELEFT'  => [
             'description'         => 'The remaining runtime left on batteries as estimated by the UPS.',
             'topic_name'          => 'time_left',
+            'friendly_name'       => 'Time left',
             'icon'                => 'mdi:av-timer',
             'unit_of_measurement' => 'minutes',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
         ],
         'MBATTCHG'  => [
-            'description'         => 'If the battery charge percentage (BCHARGE) drops below this value, apcupsd will shutdown your system. Value is set in the configuration file (BATTERYLEVEL)',
+            'description'         => 'If the battery charge percentage (BCHARGE) drops below this value, apcupsd ' .
+                'will shutdown your system. Value is set in the configuration file (BATTERYLEVEL)',
             'topic_name'          => 'charge_to_shutdown',
+            'friendly_name'       => 'Charge to shutdown',
             'icon'                => 'mdi:gauge',
             'unit_of_measurement' => '%',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
         ],
         'MINTIMEL'  => [
-            'description'         => 'apcupsd will shutdown your system if the remaining runtime equals or is below this point. Value is set in the configuration file (MINUTES)',
+            'description'         => 'apcupsd will shutdown your system if the remaining runtime equals or is below ' .
+                'this point. Value is set in the configuration file (MINUTES)',
             'topic_name'          => 'minutes_to_shutdown',
+            'friendly_name'       => 'Minutes to shutdown',
             'icon'                => 'mdi:av-timer',
             'unit_of_measurement' => 'minutes',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
         ],
         'MAXTIME'   => [
-            'description'         => 'apcupsd will shutdown your system if the time on batteries exceeds this value. A value of zero disables the feature. Value is set in the configuration file (TIMEOUT)',
+            'description'         => 'apcupsd will shutdown your system if the time on batteries exceeds this value. ' .
+                'A value of zero disables the feature. Value is set in the configuration file (TIMEOUT)',
             'topic_name'          => 'max_time_on_batteries',
+            'friendly_name'       => 'Max time on batteries',
             'icon'                => 'mdi:av-timer',
             'unit_of_measurement' => 'seconds',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -145,6 +151,7 @@ class Apcupsd2mqttPhp
         'MAXLINEV'  => [
             'description'         => 'The maximum line voltage since the UPS was started, as reported by the UPS',
             'topic_name'          => 'max_line_voltage',
+            'friendly_name'       => 'Max input voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -152,6 +159,7 @@ class Apcupsd2mqttPhp
         'MINLINEV'  => [
             'description'         => 'The minimum line voltage since the UPS was started, as returned by the UPS',
             'topic_name'          => 'min_line_voltage',
+            'friendly_name'       => 'Min input voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -159,6 +167,7 @@ class Apcupsd2mqttPhp
         'OUTPUTV'   => [
             'description'         => 'The voltage the UPS is supplying to your equipment',
             'topic_name'          => 'output_voltage',
+            'friendly_name'       => 'Output voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -166,32 +175,38 @@ class Apcupsd2mqttPhp
         'SENSE'     => [
             'description'         => 'The sensitivity level of the UPS to line voltage fluctuations.',
             'topic_name'          => 'sensitivity_level',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Sensitivity level',
+            'icon'                => 'mdi:signal-cellular-3',
         ],
         'DWAKE'     => [
-            'description'         => 'The amount of time the UPS will wait before restoring power to your equipment after a power off condition when the power is restored.',
+            'description'         => 'The amount of time the UPS will wait before restoring power to your equipment ' .
+                'after a power off condition when the power is restored.',
             'topic_name'          => 'time_to_restore_power',
+            'friendly_name'       => 'Time to restore power',
             'icon'                => 'mdi:av-timer',
             'unit_of_measurement' => 'seconds',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
         ],
         'DSHUTD'    => [
-            'description'         => 'The grace delay that the UPS gives after receiving a power down command from apcupsd before it powers off your equipment.',
+            'description'         => 'The grace delay that the UPS gives after receiving a power down command from ' .
+                'apcupsd before it powers off your equipment.',
             'topic_name'          => 'delay_after_shutdown_command',
+            'friendly_name'       => 'Delay after shutdown command',
             'icon'                => 'mdi:av-timer',
             'unit_of_measurement' => 'seconds',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
         ],
         'DLOWBATT'  => [
-            'description'         => 'The remaining runtime below which the UPS sends the low battery signal. At this point apcupsd will force an immediate emergency shutdown.',
+            'description'         => 'The remaining runtime below which the UPS sends the low battery signal. ' .
+                'At this point apcupsd will force an immediate emergency shutdown.',
             'topic_name'          => 'remaining_runtime_to_shutdown',
+            'friendly_name'       => 'Remaining runtime to shutdown',
             'icon'                => 'mdi:av-timer',
-            'unit_of_measurement' => '',
         ],
         'LOTRANS'   => [
             'description'         => 'The line voltage below which the UPS will switch to batteries.',
             'topic_name'          => 'low_voltage',
+            'friendly_name'       => 'Low input voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -199,13 +214,16 @@ class Apcupsd2mqttPhp
         'HITRANS'   => [
             'description'         => 'The line voltage above which the UPS will switch to batteries.',
             'topic_name'          => 'high_voltage',
+            'friendly_name'       => 'High input voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
         ],
         'RETPCT'    => [
-            'description'         => 'The percentage charge that the batteries must have after a power off condition before the UPS will restore power to your equipment.',
+            'description'         => 'The percentage charge that the batteries must have after a power off condition ' .
+                'before the UPS will restore power to your equipment.',
             'topic_name'          => 'min_charge_to_restore',
+            'friendly_name'       => 'Min charge to restore',
             'icon'                => 'mdi:gauge',
             'unit_of_measurement' => '%',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -213,6 +231,7 @@ class Apcupsd2mqttPhp
         'ITEMP'     => [
             'description'         => 'Internal UPS temperature as supplied by the UPS.',
             'topic_name'          => 'internal_temperature',
+            'friendly_name'       => 'Internal temperature',
             'icon'                => 'mdi:thermometer',
             'unit_of_measurement' => '°C',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -220,12 +239,13 @@ class Apcupsd2mqttPhp
         'ALARMDEL'  => [
             'description'         => 'The delay period for the UPS alarm.',
             'topic_name'          => 'alarm_delay',
+            'friendly_name'       => 'Alarm delay',
             'icon'                => 'mdi:av-timer',
-            'unit_of_measurement' => '',
         ],
         'BATTV'     => [
             'description'         => 'Battery voltage as supplied by the UPS.',
             'topic_name'          => 'battery_voltage',
+            'friendly_name'       => 'Battery voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -233,6 +253,7 @@ class Apcupsd2mqttPhp
         'LINEFREQ'  => [
             'description'         => 'Line frequency in hertz as given by the UPS.',
             'topic_name'          => 'line_frequency',
+            'friendly_name'       => 'Line frequency',
             'icon'                => 'mdi:sine-wave',
             'unit_of_measurement' => 'Hz',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -240,25 +261,24 @@ class Apcupsd2mqttPhp
         'LASTXFER'  => [
             'description'         => 'The reason for the last transfer to batteries.',
             'topic_name'          => 'last_transfer_reason',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Last transfer reason',
         ],
         'NUMXFERS'  => [
             'description'         => 'The number of transfers to batteries since apcupsd startup.',
             'topic_name'          => 'number_of_transfers',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Number of transfers',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
         ],
         'XONBATT'   => [
             'description'         => 'Time and date of last transfer to batteries, or N/A.',
             'topic_name'          => 'last_transfer_to_batteries_datetime',
+            'friendly_name'       => 'Last transfer to batteries',
             'icon'                => 'mdi:calendar-clock',
-            'unit_of_measurement' => '',
         ],
         'TONBATT'   => [
             'description'         => 'Time in seconds currently on batteries, or 0.',
             'topic_name'          => 'seconds_on_batteries',
+            'friendly_name'       => 'Currently on batteries',
             'icon'                => 'mdi:av-timer',
             'unit_of_measurement' => 'seconds',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -266,6 +286,7 @@ class Apcupsd2mqttPhp
         'CUMONBATT' => [
             'description'         => 'Total (cumulative) time on batteries in seconds since apcupsd startup.',
             'topic_name'          => 'total_seconds_on_batteries',
+            'friendly_name'       => 'Total on batteries',
             'icon'                => 'mdi:av-timer',
             'unit_of_measurement' => 'seconds',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -273,72 +294,66 @@ class Apcupsd2mqttPhp
         'XOFFBATT'  => [
             'description'         => 'Time and date of last transfer from batteries, or N/A.',
             'topic_name'          => 'last_transfer_from_batteries_datetime',
+            'friendly_name'       => 'Last transfer from batteries',
             'icon'                => 'mdi:calendar-clock',
-            'unit_of_measurement' => '',
         ],
         'SELFTEST'  => [
             'description'         => 'The results of the last self test, and may have the following values:',
             'topic_name'          => 'self_test_result',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Self test result',
         ],
         'STESTI'    => [
             'description'         => 'The interval in hours between automatic self tests.',
             'topic_name'          => 'self_test_interval',
+            'friendly_name'       => 'Self test interval (hours)',
             'icon'                => 'mdi:av-timer',
-            'unit_of_measurement' => '',
         ],
         'STATFLAG'  => [
             'description'         => 'Status flag. English version is given by STATUS.',
             'topic_name'          => 'status_flag',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Status flag',
         ],
         'DIPSW'     => [
             'description'         => 'The current dip switch settings on UPSes that have them.',
             'topic_name'          => 'dip_switch',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Current dip switch settings',
         ],
         'REG1'      => [
             'description'         => 'The value from the UPS fault register 1.',
             'topic_name'          => 'register_1',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Register 1',
         ],
         'REG2'      => [
             'description'         => 'The value from the UPS fault register 2.',
             'topic_name'          => 'register_2',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Register 2',
         ],
         'REG3'      => [
             'description'         => 'The value from the UPS fault register 3.',
             'topic_name'          => 'register_3',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Register 3',
         ],
         'MANDATE'   => [
             'description'         => 'The date the UPS was manufactured.',
             'topic_name'          => 'manufacturing_date',
+            'friendly_name'       => 'Manufacturing date',
             'icon'                => 'mdi:calendar',
-            'unit_of_measurement' => '',
         ],
         'SERIALNO'  => [
             'description'         => 'The UPS serial number.',
             'topic_name'          => 'serial_number',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Serial number',
         ],
         'BATTDATE'  => [
             'description'         => 'The date that batteries were last replaced.',
             'topic_name'          => 'batteries_replace_date',
+            'friendly_name'       => 'Batteries replaced',
             'icon'                => 'mdi:calendar-clock',
-            'unit_of_measurement' => '',
         ],
         'NOMOUTV'   => [
             'description'         => 'The output voltage that the UPS will attempt to supply when on battery power.',
             'topic_name'          => 'output_voltage_on_batteries',
+            'friendly_name'       => 'Output voltage on batteries',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -346,6 +361,7 @@ class Apcupsd2mqttPhp
         'NOMINV'    => [
             'description'         => 'The input voltage that the UPS is configured to expect.',
             'topic_name'          => 'expected_input_voltage',
+            'friendly_name'       => 'Expected input voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -353,6 +369,7 @@ class Apcupsd2mqttPhp
         'NOMBATTV'  => [
             'description'         => 'The nominal battery voltage.',
             'topic_name'          => 'nominal_battery_voltage',
+            'friendly_name'       => 'Nominal battery voltage',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'V',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -360,6 +377,7 @@ class Apcupsd2mqttPhp
         'NOMPOWER'  => [
             'description'         => 'The maximum power in Watts that the UPS is designed to supply.',
             'topic_name'          => 'max_power',
+            'friendly_name'       => 'Max power',
             'icon'                => 'mdi:flash',
             'unit_of_measurement' => 'W',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | int }}',
@@ -367,6 +385,7 @@ class Apcupsd2mqttPhp
         'HUMIDITY'  => [
             'description'         => 'The humidity as measured by the UPS.',
             'topic_name'          => 'humidity',
+            'friendly_name'       => 'Humidity',
             'icon'                => 'mdi:water-percent',
             'unit_of_measurement' => '%',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -374,6 +393,7 @@ class Apcupsd2mqttPhp
         'AMBTEMP'   => [
             'description'         => 'The ambient temperature as measured by the UPS.',
             'topic_name'          => 'ambient_temperature',
+            'friendly_name'       => 'Ambient temperature',
             'icon'                => 'mdi:thermometer',
             'unit_of_measurement' => '°C',
             'value_template'      => '{{ value_json.%PROPERTY_NAME%.split()[0] | float }}',
@@ -381,32 +401,28 @@ class Apcupsd2mqttPhp
         'EXTBATTS'  => [
             'description'         => 'The number of external batteries as defined by the user. A correct number here helps the UPS compute the remaining runtime more accurately.',
             'topic_name'          => 'external_batteries_number',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'External batteries number',
         ],
         'BADBATTS'  => [
             'description'         => 'The number of bad battery packs.',
             'topic_name'          => 'bad_batteries_number',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Bad batteries number',
         ],
         'FIRMWARE'  => [
             'description'         => 'The firmware revision number as reported by the UPS.',
             'topic_name'          => 'firmware',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Firmware',
         ],
         'APCMODEL'  => [
             'description'         => 'The old APC model identification code.',
             'topic_name'          => 'model_identification_code',
-            'icon'                => 'mdi:information',
-            'unit_of_measurement' => '',
+            'friendly_name'       => 'Model identification code',
         ],
         'END APC'   => [
             'description'         => 'The time and date that the STATUS record was written.',
             'topic_name'          => 'record_datetime',
+            'friendly_name'       => 'Record timestamp',
             'icon'                => 'mdi:calendar-clock',
-            'unit_of_measurement' => '',
         ],
     ];
 
@@ -529,6 +545,27 @@ class Apcupsd2mqttPhp
                 self::ERROR_MQTT
             );
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function generateCustomizationYaml(): string
+    {
+        $yaml = 'homeassistant:' . PHP_EOL;
+        $yaml .= '  customize:' . PHP_EOL;
+
+        foreach ($this->config['devices'] as $device) {
+            foreach ($this->config['properties'] as $property) {
+                if (empty(self::$properties[$property]['friendly_name'])) {
+                    continue;
+                }
+                $yaml .= '    sensor.' . strtolower($device['name']) . '_' . self::$properties[$property]['topic_name'] . ':' . PHP_EOL;
+                $yaml .= '      friendly_name: \'' . self::$properties[$property]['friendly_name'] . '\'' . PHP_EOL;
+            }
+        }
+
+        return $yaml;
     }
 
     /**
@@ -732,11 +769,10 @@ class Apcupsd2mqttPhp
                 date('[Y-m-d H:i:s] ') . $errorMessage . PHP_EOL,
                 FILE_APPEND
             );
-            exit($exitCode);
         } else {
             echo $errorMessage . PHP_EOL;
-            exit($exitCode);
         }
+        exit($exitCode);
     }
 
 }

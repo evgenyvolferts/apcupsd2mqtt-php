@@ -67,6 +67,12 @@ sudo systemctl enable apcupsd2mqtt-php.service
 sudo systemctl start apcupsd2mqtt-php.service
 ```
 
+## Friendly names for sensors
+[Home Assistant](https://www.home-assistant.io) doesn't support friendly names for sensors retrieving from MQTT broker, but you can generate `customize` section of `configuration.yaml`:
+```bash
+php ./generate-customization-yaml.php
+```
+
 ## License
 
 `evgenyvolferts/apcupsd2mqtt-php` is open-sourced software licensed under the [MIT license](LICENSE).
