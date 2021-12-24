@@ -12,4 +12,5 @@ User=pi
 ExecStart=/usr/bin/php /home/pi/apcupsd2mqtt-php/start.php
 KillSignal=SIGTERM
 KillMode=process
-Restart=on-failure
+Restart=always
+RuntimeMaxSec=3600
