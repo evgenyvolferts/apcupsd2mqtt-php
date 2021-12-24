@@ -691,6 +691,8 @@ class Apcupsd2mqttPhp
                             'Package apcupsd is not installed',
                             self::ERROR_APCUPSD_NOT_INSTALLED
                         );
+                    } elseif (strpos($result['error'], 'Connection refused') !== false) {
+                        $this->logError($result['error']);
                     } elseif (!empty($result['error'])) {
                         $this->terminateWithError(
                             'Error running apcaccess: ' . $result['error'],
@@ -759,10 +761,9 @@ class Apcupsd2mqttPhp
 
     /**
      * @param string $errorMessage
-     * @param int $exitCode
      * @return void
      */
-    private function terminateWithError(string $errorMessage = '', int $exitCode = 0)
+    private function logError(string $errorMessage = '')
     {
         if (!empty($this->config['errorLog'])) {
             file_put_contents(
@@ -773,6 +774,16 @@ class Apcupsd2mqttPhp
         } else {
             echo $errorMessage . PHP_EOL;
         }
+    }
+
+    /**
+     * @param string $errorMessage
+     * @param int $exitCode
+     * @return void
+     */
+    private function terminateWithError(string $errorMessage = '', int $exitCode = 0)
+    {
+        $this->logError($errorMessage);
         exit($exitCode);
     }
 
