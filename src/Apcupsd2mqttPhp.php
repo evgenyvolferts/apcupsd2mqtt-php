@@ -608,10 +608,13 @@ class Apcupsd2mqttPhp
 
                     // publish all sensors current state
                     try {
-                        $this->mqtt->publish(
-                            'apcupsd2mqtt-php/' . $deviceSerial,
-                            json_encode($sensorData, JSON_UNESCAPED_UNICODE)
-                        );
+                        foreach ($sensorData as $topicName => $value) {
+                            $this->mqtt->publish(
+                                'apcupsd2mqtt-php/' . $deviceSerial . '/' . $topicName,
+                                json_encode(['value' => $value], JSON_UNESCAPED_UNICODE)
+                            );
+                        }
+
                     } catch (Exception $e) {
                         $this->terminateWithError(
                             'MQTT exception: ' . $e->getMessage(),
@@ -646,9 +649,9 @@ class Apcupsd2mqttPhp
                             if (isset(self::$properties[$key]['icon'])) {
                                 $sensorConfig['icon'] = self::$properties[$key]['icon'];
                             }
-                            $sensorConfig['json_attributes_topic'] = 'apcupsd2mqtt-php/' . $deviceSerial;
+                            $sensorConfig['json_attributes_topic'] = 'apcupsd2mqtt-php/' . $deviceSerial . '/' . self::$properties[$key]['topic_name'];
                             $sensorConfig['name'] = strtolower($device['name']) . ' ' . self::$properties[$key]['topic_name'];
-                            $sensorConfig['state_topic'] = 'apcupsd2mqtt-php/' . $deviceSerial;
+                            $sensorConfig['state_topic'] = 'apcupsd2mqtt-php/' . $deviceSerial . '/' . self::$properties[$key]['topic_name'];
                             $sensorConfig['unique_id'] = 'apcupsd2mqtt_php_' . $deviceSerial . '_' . self::$properties[$key]['topic_name'];
                             if (isset(self::$properties[$key]['unit_of_measurement'])) {
                                 $sensorConfig['unit_of_measurement'] = self::$properties[$key]['unit_of_measurement'];
@@ -656,13 +659,13 @@ class Apcupsd2mqttPhp
                             if (isset(self::$properties[$key]['value_template'])) {
                                 $sensorConfig['value_template'] = str_replace(
                                     '%PROPERTY_NAME%',
-                                    self::$properties[$key]['topic_name'],
+                                    'value',
                                     self::$properties[$key]['value_template']
                                 );
                             } else {
                                 $sensorConfig['value_template'] = str_replace(
                                     '%PROPERTY_NAME%',
-                                    self::$properties[$key]['topic_name'],
+                                    'value',
                                     $sensorConfig['value_template']
                                 );
                             }
@@ -691,7 +694,10 @@ class Apcupsd2mqttPhp
                             'Package apcupsd is not installed',
                             self::ERROR_APCUPSD_NOT_INSTALLED
                         );
-                    } elseif (strpos($result['error'], 'Connection refused') !== false) {
+                    } elseif (
+                        strpos($result['error'], 'Connection refused') !== false
+                        || strpos($result['error'], 'No route to host') !== false
+                    ) {
                         $this->logError($result['error']);
                     } elseif (!empty($result['error'])) {
                         $this->terminateWithError(
