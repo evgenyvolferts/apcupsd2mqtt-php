@@ -614,7 +614,6 @@ class Apcupsd2mqttPhp
                                 json_encode(['value' => $value], JSON_UNESCAPED_UNICODE)
                             );
                         }
-
                     } catch (Exception $e) {
                         $this->terminateWithError(
                             'MQTT exception: ' . $e->getMessage(),
@@ -674,11 +673,16 @@ class Apcupsd2mqttPhp
                             try {
                                 $this->mqtt->publish(
                                     strtolower($device['haTopic']) . '/' . self::$properties[$key]['topic_name'] . '/config',
-                                    ''
+                                    '',
+                                    0,
+                                    true
                                 );
+                                usleep(10000);
                                 $this->mqtt->publish(
                                     strtolower($device['haTopic']) . '/' . self::$properties[$key]['topic_name'] . '/config',
-                                    json_encode($sensorConfig, JSON_UNESCAPED_UNICODE)
+                                    json_encode($sensorConfig, JSON_UNESCAPED_UNICODE),
+                                    0,
+                                    true
                                 );
                             } catch (Exception $e) {
                                 $this->terminateWithError(
@@ -686,6 +690,7 @@ class Apcupsd2mqttPhp
                                     self::ERROR_MQTT
                                 );
                             }
+                            usleep(10000);
                         }
                     }
                 } else {
