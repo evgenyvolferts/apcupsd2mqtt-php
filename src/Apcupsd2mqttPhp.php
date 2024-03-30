@@ -20,16 +20,15 @@ class Apcupsd2mqttPhp
     const ERROR_UNKNOWN = 99;
 
     public static array $propertyConfigTemplate = [
-        'availability'        => [
+        'availability'       => [
             [
                 'topic' => 'apcupsd2mqtt-php/bridge/state',
             ],
         ],
-        'enabled_by_default'  => true,
-        'entity_category'     => 'diagnostic',
-        'icon'                => 'mdi:information',
-        'unit_of_measurement' => '',
-        'value_template'      => '{{ value_json.%PROPERTY_NAME% }}',
+        'enabled_by_default' => true,
+        'entity_category'    => 'diagnostic',
+        'icon'               => 'mdi:information',
+        'value_template'     => '{{ value_json.%PROPERTY_NAME% }}',
     ];
 
     public static array $properties = [
@@ -487,6 +486,7 @@ class Apcupsd2mqttPhp
                 0,
                 true
             );
+            usleep(10000);
         } catch (Exception $e) {
             $this->terminateWithError(
                 'MQTT exception: ' . $e->getMessage(),
@@ -497,7 +497,7 @@ class Apcupsd2mqttPhp
 
     /**
      * @param string $host
-     * @param int $port
+     * @param int    $port
      * @return array
      */
     public static function collect(string $host = '127.0.0.1', int $port = 3551): array
@@ -533,11 +533,14 @@ class Apcupsd2mqttPhp
 
     public function __destruct()
     {
+        array_map('unlink', glob(sys_get_temp_dir() . '/apcupsd2mqtt-php-*'));
+
         try {
             $this->mqtt->publish(
                 'apcupsd2mqtt-php/bridge/state',
                 'offline'
             );
+            usleep(10000);
 
             $this->mqtt->disconnect();
         } catch (Exception $e) {
@@ -557,10 +560,22 @@ class Apcupsd2mqttPhp
         $yaml .= '  customize:' . PHP_EOL;
 
         foreach ($this->config['devices'] as $device) {
-            foreach ($this->config['properties'] as $property) {
+            $result = self::collect($device['host'], $device['port']);
+            if ($result['success'] === true) {
+                $deviceKeys = array_keys($result['data']);
+            } else {
+                $deviceKeys = $this->config['properties'];
+            }
+
+            foreach ($deviceKeys as $property) {
+                if (!in_array($property, $this->config['properties'])) {
+                    continue;
+                }
+
                 if (empty(self::$properties[$property]['friendly_name'])) {
                     continue;
                 }
+
                 $yaml .= '    sensor.' . strtolower($device['name']) . '_' . self::$properties[$property]['topic_name'] . ':' . PHP_EOL;
                 $yaml .= '      friendly_name: \'' . self::$properties[$property]['friendly_name'] . '\'' . PHP_EOL;
             }
@@ -596,9 +611,28 @@ class Apcupsd2mqttPhp
 
                     $deviceSerial = strtolower($result['data']['SERIALNO']);
 
+                    $cachedDataFilename = sys_get_temp_dir() . '/apcupsd2mqtt-php-' . md5($device['host'] . $device['port']) . '.json';
+                    if (file_exists($cachedDataFilename)) {
+                        $cachedData = json_decode(file_get_contents($cachedDataFilename), true);
+
+                        if (json_last_error() === JSON_ERROR_NONE) {
+                            $updatedData = [];
+                            foreach ($result['data'] as $key => $value) {
+                                if ($value != $cachedData[$key]) {
+                                    $updatedData[$key] = $value;
+                                }
+                            }
+                        } else {
+                            $updatedData = $result['data'];
+                        }
+                    } else {
+                        $updatedData = $result['data'];
+                    }
+                    file_put_contents($cachedDataFilename, json_encode($result['data']));
+
                     $sensorData = [];
 
-                    foreach ($result['data'] as $key => $value) {
+                    foreach ($updatedData as $key => $value) {
                         if (!in_array($key, array_keys(self::$properties))) {
                             continue;
                         }
@@ -613,6 +647,7 @@ class Apcupsd2mqttPhp
                                 'apcupsd2mqtt-php/' . $deviceSerial . '/' . $topicName,
                                 json_encode(['value' => $value], JSON_UNESCAPED_UNICODE)
                             );
+                            usleep(10000);
                         }
                     } catch (Exception $e) {
                         $this->terminateWithError(
@@ -649,7 +684,7 @@ class Apcupsd2mqttPhp
                                 $sensorConfig['icon'] = self::$properties[$key]['icon'];
                             }
                             $sensorConfig['json_attributes_topic'] = 'apcupsd2mqtt-php/' . $deviceSerial . '/' . self::$properties[$key]['topic_name'];
-                            $sensorConfig['name'] = strtolower($device['name']) . ' ' . self::$properties[$key]['topic_name'];
+                            $sensorConfig['name'] = self::$properties[$key]['topic_name'];
                             $sensorConfig['state_topic'] = 'apcupsd2mqtt-php/' . $deviceSerial . '/' . self::$properties[$key]['topic_name'];
                             $sensorConfig['unique_id'] = 'apcupsd2mqtt_php_' . $deviceSerial . '_' . self::$properties[$key]['topic_name'];
                             if (isset(self::$properties[$key]['unit_of_measurement'])) {
@@ -673,24 +708,17 @@ class Apcupsd2mqttPhp
                             try {
                                 $this->mqtt->publish(
                                     strtolower($device['haTopic']) . '/' . self::$properties[$key]['topic_name'] . '/config',
-                                    '',
-                                    0,
-                                    true
-                                );
-                                usleep(10000);
-                                $this->mqtt->publish(
-                                    strtolower($device['haTopic']) . '/' . self::$properties[$key]['topic_name'] . '/config',
                                     json_encode($sensorConfig, JSON_UNESCAPED_UNICODE),
                                     0,
                                     true
                                 );
+                                usleep(50000);
                             } catch (Exception $e) {
                                 $this->terminateWithError(
                                     'MQTT exception: ' . $e->getMessage(),
                                     self::ERROR_MQTT
                                 );
                             }
-                            usleep(10000);
                         }
                     }
                 } else {
@@ -789,7 +817,7 @@ class Apcupsd2mqttPhp
 
     /**
      * @param string $errorMessage
-     * @param int $exitCode
+     * @param int    $exitCode
      * @return void
      */
     private function terminateWithError(string $errorMessage = '', int $exitCode = 0)
