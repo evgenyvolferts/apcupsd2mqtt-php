@@ -800,18 +800,19 @@ class Apcupsd2mqttPhp
 
     /**
      * @param string $errorMessage
+     * @param bool   $useTimePrefix
      * @return void
      */
-    private function logError(string $errorMessage = '')
+    private function logError(string $errorMessage = '', bool $useTimePrefix = true)
     {
         if (!empty($this->config['errorLog'])) {
             file_put_contents(
                 $this->config['errorLog'],
-                date('[Y-m-d H:i:s] ') . $errorMessage . PHP_EOL,
+                ($useTimePrefix ? date('[Y-m-d H:i:s] ') : '') . $errorMessage . PHP_EOL,
                 FILE_APPEND
             );
         } else {
-            echo $errorMessage . PHP_EOL;
+            echo ($useTimePrefix ? date('[Y-m-d H:i:s] ') : '') . $errorMessage . PHP_EOL;
         }
     }
 
