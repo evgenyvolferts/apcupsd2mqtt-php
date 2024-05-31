@@ -8,7 +8,7 @@ use PhpMqtt\Client\MqttClient;
 
 class Apcupsd2mqttPhp
 {
-    const DEFAULT_INTERVAL = 1000000;
+    const DEFAULT_INTERVAL = 10;
 
     const ERROR_NO_CONFIG = 1;
     const ERROR_INVALID_CONFIG_JSON = 2;
@@ -458,6 +458,10 @@ class Apcupsd2mqttPhp
                 'No devices configured',
                 self::ERROR_NO_DEVICES_CONFIGURED
             );
+        }
+
+        if (empty($this->config['pidFile'])) {
+            $this->config['pidFile'] = '/tmp/apcupsd2mqtt-php.pid';
         }
 
         if ($this->isDaemonActive($this->config['pidFile'])) {
