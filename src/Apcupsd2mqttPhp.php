@@ -556,12 +556,19 @@ class Apcupsd2mqttPhp
     }
 
     /**
+     * @param bool $usePrefix
      * @return string
      */
-    public function generateCustomizationYaml(): string
+    public function generateCustomizationYaml(bool $usePrefix = true): string
     {
-        $yaml = 'homeassistant:' . PHP_EOL;
-        $yaml .= '  customize:' . PHP_EOL;
+        $yaml = '';
+        $prefix = '';
+
+        if ($usePrefix) {
+            $yaml .= 'homeassistant:' . PHP_EOL;
+            $yaml .= '  customize:' . PHP_EOL;
+            $prefix = '    ';
+        }
 
         foreach ($this->config['devices'] as $device) {
             $result = self::collect($device['host'], $device['port']);
@@ -580,8 +587,8 @@ class Apcupsd2mqttPhp
                     continue;
                 }
 
-                $yaml .= '    sensor.' . strtolower($device['name']) . '_' . self::$properties[$property]['topic_name'] . ':' . PHP_EOL;
-                $yaml .= '      friendly_name: \'' . self::$properties[$property]['friendly_name'] . '\'' . PHP_EOL;
+                $yaml .= $prefix . 'sensor.' . strtolower($device['name']) . '_' . self::$properties[$property]['topic_name'] . ':' . PHP_EOL;
+                $yaml .= $prefix . '  friendly_name: \'' . self::$properties[$property]['friendly_name'] . '\'' . PHP_EOL;
             }
         }
 
