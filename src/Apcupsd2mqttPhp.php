@@ -629,7 +629,7 @@ class Apcupsd2mqttPhp
                         if (json_last_error() === JSON_ERROR_NONE) {
                             $updatedData = [];
                             foreach ($result['data'] as $key => $value) {
-                                if ($value != $cachedData[$key]) {
+                                if (!isset($cachedData[$key]) || $value != $cachedData[$key]) {
                                     $updatedData[$key] = $value;
                                 }
                             }
